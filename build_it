@@ -1,0 +1,34 @@
+### select toolchain
+## GCC 4.4.3
+##CUR_TC=/home/doomlord/android/system/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/
+## GCC 4.6 Linaro
+CUR_TC=/home/nik/android/toolchain/bin/
+## GCC 4.7 Linaro
+##CUR_TC=/home/doomlord/android-toolchain-eabi-linaro-4.7-2013.01/bin/
+
+### compile kernel
+ARCH=arm CROSS_COMPILE=${CUR_TC}arm-linux-gnueabihf- make fusion3_yuga_defconfig
+ARCH=arm CROSS_COMPILE=${CUR_TC}arm-linux-gnueabihf- make CONFIG_DEBUG_SECTION_MISMATCH=y -j8
+
+echo "checking for compiled kernel..."
+if [ -f arch/arm/boot/zImage ]
+then
+
+### copy modules
+cp drivers/staging/prima/wlan.ko ../build/.
+cp net/wireless/cfg80211.ko ../build/.
+
+### copy zImage
+cp arch/arm/boot/zImage ../build/.
+
+### Stripping modules
+echo "Stripping modules"
+cd ../build/
+for i in $(find . | grep .ko | grep './')
+do
+        echo $i
+	${CUR_TC}arm-linux-gnueabihf-strip --strip-unneeded $i
+done
+
+/home/nik/android/build/makeit.sh
+fi
