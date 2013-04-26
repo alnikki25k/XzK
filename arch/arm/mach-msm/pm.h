@@ -87,6 +87,12 @@ struct msm_pm_sleep_ops {
 			bool notify_rpm, bool collapsed);
 };
 
+struct msm_pm_sleep_status_data {
+	void *base_addr;
+	uint32_t cpu_offset;
+	uint32_t mask;
+};
+
 struct msm_pm_cpr_ops {
 	void (*cpr_suspend)(void);
 	void (*cpr_resume)(void);
@@ -98,14 +104,19 @@ int msm_pm_idle_prepare(struct cpuidle_device *dev,
 void msm_pm_set_irq_extns(struct msm_pm_irq_calls *irq_calls);
 int msm_pm_idle_enter(enum msm_pm_sleep_mode sleep_mode);
 void msm_pm_cpu_enter_lowpower(unsigned int cpu);
+
+void __init msm_pm_init_sleep_status_data(
+		struct msm_pm_sleep_status_data *sleep_data);
 void __init msm_pm_set_tz_retention_flag(unsigned int flag);
 
 #ifdef CONFIG_MSM_PM8X60
 void msm_pm_set_rpm_wakeup_irq(unsigned int irq);
 void msm_pm_set_sleep_ops(struct msm_pm_sleep_ops *ops);
+int msm_pm_wait_cpu_shutdown(unsigned int cpu); 
 #else
 static inline void msm_pm_set_rpm_wakeup_irq(unsigned int irq) {}
 static inline void msm_pm_set_sleep_ops(struct msm_pm_sleep_ops *ops) {}
+static inline int msm_pm_wait_cpu_shutdown(unsigned int cpu) { return 0; } 
 #endif
 #ifdef CONFIG_HOTPLUG_CPU
 int msm_platform_secondary_init(unsigned int cpu);

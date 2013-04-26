@@ -180,7 +180,7 @@ static int __init startup_rgb(char *str)
 	int vbus;
 	if (get_option(&str, &vbus)) {
 		if (vbus & VBUS_BIT)
-			lm3533_startup_brightnesses[1].brightness = 50;
+			lm3533_startup_brightnesses[1].brightness = 20;
 		return 0;
 	}
 	return -EINVAL;

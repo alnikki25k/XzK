@@ -25,6 +25,7 @@
 #include <linux/percpu.h>
 #include <linux/clockchips.h>
 #include <linux/completion.h>
+#include "../mach-msm/pm.h" 
 
 #include <linux/atomic.h>
 #include <asm/cacheflush.h>
